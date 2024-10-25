@@ -1,0 +1,9 @@
+.mt-10 {
+  margin-top: 128px;
+}
+
+@media screen and (min-width: 1400px) {
+  .my-container {
+    max-width: 1800px;
+  }
+}

@@ -3,12 +3,14 @@ const router = express.Router()
 
 const userRoutes = require('./user')
 const oauthRoutes = require('./oauth')
-const { authenticate } = require('../middlewares/auth')
+const adminRoutes = require('./admin')
+const { authenticate, isGeneralUser, isAdmin } = require('../middlewares/auth')
 
 router.use('/user', userRoutes)
 router.use('/oauth', oauthRoutes)
+router.use('/admin', authenticate, isAdmin, adminRoutes)
 
-router.get('/', authenticate, (req, res, next) => {
+router.get('/', authenticate, isGeneralUser, (req, res, next) => {
   return res.render('index')
 })
 

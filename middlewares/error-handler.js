@@ -5,7 +5,8 @@ function generalErrorHandler (err, req, res, next) {
     req.flash('error_messages', `${err}`)
   }
 
-  res.redirect(req.get('Referer') || '/')
+  res.redirect(req.get('Referer'))
+
   return next(err)
 }
 

@@ -8,37 +8,37 @@ const userControllers = {
   },
 
   async postSignup (req, res, next) {
-    const name = req.body.name?.trim()
-    const email = req.body.email?.trim()
-    const { password, passwordConfirm } = req.body
-    if (!email) throw new Error('Email is required!')
-    if (!password || password !== passwordConfirm) throw new Error('Password should be equal to password confirm!')
-
-    const transaction = await sequelize.transaction()
-
     try {
-      const user = await User.findOne({ where: { email } })
-      if (user) throw new Error('User existed, try another email.')
+      const name = req.body.name?.trim()
+      const email = req.body.email?.trim()
+      const { password, passwordConfirm } = req.body
+      if (!email) throw new Error('Email is required!')
+      if (!password || password !== passwordConfirm) throw new Error('Password should be equal to password confirm!')
 
-      const hash = await bcrypt.hash(password, 10)
+      const transaction = await sequelize.transaction()
 
-      const createdUser = await User.create({
-        name,
-        email,
-        password: hash
-      }, { transaction })
+      try {
+        const user = await User.findOne({ where: { email } })
+        if (user) throw new Error('User existed, try another email.')
 
-      await Student.create({
-        userId: createdUser.id
-      }, { transaction })
+        const hash = await bcrypt.hash(password, 10)
 
-      await transaction.commit()
-    } catch (err) {
-      await transaction.rollback()
-      return next(err)
-    }
+        const createdUser = await User.create({
+          name,
+          email,
+          password: hash
+        }, { transaction })
 
-    try {
+        await Student.create({
+          userId: createdUser.id
+        }, { transaction })
+
+        await transaction.commit()
+      } catch (err) {
+        await transaction.rollback()
+        throw err
+      }
+
       req.flash('success_messages', '註冊成功!')
       return res.redirect('/user/signin')
     } catch (err) {
@@ -52,7 +52,9 @@ const userControllers = {
 
   postSignin (req, res, next) {
     req.flash('success_messages', '登入成功!')
-    return res.redirect('/')
+
+    if (req.user.status === 'admin') return res.redirect('/admin') // 之後改成導到後臺主頁
+    return res.redirect('/') // 之後改成導到前台主頁
   },
 
   postLogout (req, res, next) {

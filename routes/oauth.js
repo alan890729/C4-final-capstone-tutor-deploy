@@ -6,7 +6,7 @@ const userControllers = require('../controllers/user-controllers')
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get('/google/redirect', passport.authenticate('google', {
-  failureRedirect: '/user/signin',
+  failureRedirect: '/signin',
   failureFlash: true
 }), userControllers.postSignin)
 

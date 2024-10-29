@@ -24,7 +24,7 @@
           <hr>
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <form action="/user/logout" method="post">
+              <form action="/logout" method="post">
                 <button type="submit" class="btn btn-link link-danger text-decoration-none border-0 px-0 py-2">Log Out</button>
               </form>
             </li>
@@ -32,10 +32,10 @@
           {{else}}
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/user/signin">Sign In</a>
+              <a class="nav-link" href="/signin">Sign In</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/user/signup">Sign Up</a>
+              <a class="nav-link" href="/signup">Sign Up</a>
             </li>
           </ul>
           {{/if}}

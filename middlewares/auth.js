@@ -6,7 +6,7 @@ function authenticate (req, res, next) {
   }
 
   req.flash('error_messages', '請先登入再進行後續的操作!')
-  return res.redirect('/user/signin')
+  return res.redirect('/signin')
 }
 
 function isStudent (req, res, next) {

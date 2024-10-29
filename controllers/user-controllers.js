@@ -40,7 +40,7 @@ const userControllers = {
       }
 
       req.flash('success_messages', '註冊成功!')
-      return res.redirect('/user/signin')
+      return res.redirect('/signin')
     } catch (err) {
       return next(err)
     }
@@ -61,7 +61,7 @@ const userControllers = {
     req.logout(err => {
       if (err) return next(err)
       req.flash('success_messages', '登出成功!')
-      return res.redirect('/user/signin')
+      return res.redirect('/signin')
     })
   }
 }

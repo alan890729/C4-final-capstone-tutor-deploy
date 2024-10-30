@@ -8,7 +8,7 @@ const userControllers = require('../controllers/user-controllers')
 const passport = require('../config/passport')
 const { authenticate, isGeneralUser, isAdmin } = require('../middlewares/auth')
 
-router.use('/user', userRoutes)
+router.use('/user', authenticate, isGeneralUser, userRoutes)
 router.use('/oauth', oauthRoutes)
 router.use('/admin', authenticate, isAdmin, adminRoutes)
 

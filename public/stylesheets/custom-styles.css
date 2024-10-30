@@ -2,8 +2,23 @@
   margin-top: 128px;
 }
 
-@media screen and (min-width: 1400px) {
-  .my-container {
-    max-width: 1800px;
+.profile-avatar-container {
+  max-width: 300px;
+}
+
+.profile-avatar {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+@media screen and (min-width: 992px) {
+  .profile-personal-info-container {
+    max-width: 300px;
   }
+}
+
+@media screen and (min-width: 1400px) {
+  /* .my-container {
+    max-width: 1800px;
+  } */
 }

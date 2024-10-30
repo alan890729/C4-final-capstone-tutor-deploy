@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User, Student, sequelize } = require('../models')
+const { User, Student, Teacher, AvailableDay, sequelize } = require('../models')
 
 const userControllers = {
   getSignup (req, res, next) {
@@ -63,6 +63,37 @@ const userControllers = {
       req.flash('success_messages', '登出成功!')
       return res.redirect('/signin')
     })
+  },
+
+  getProfile (req, res, next) {
+    const targetUserId = Number(req.params.userId)
+    const currentUserId = req.user.id
+
+    if (targetUserId === currentUserId) {
+      return res.render('user/profile')
+    } else {
+      return User.findByPk(targetUserId, {
+        attributes: ['status']
+      })
+        .then(user => {
+          if (!user) throw new Error('User not found!')
+          if (user.status === 'student' || user.status === 'admin') throw new Error('不能查看其他學生的個人資料!')
+
+          return User.findByPk(targetUserId, {
+            attributes: { exclude: ['password'] },
+            include: [
+              { model: Teacher, include: [{ model: AvailableDay }] }
+            ]
+          })
+        })
+        .then(userWithTeacherStatus => {
+          const targetUser = userWithTeacherStatus.toJSON()
+          targetUser.Teacher.AvailableDays = userWithTeacherStatus.Teacher.AvailableDays.map(day => day.day)
+
+          res.render('user/profile', { targetUser })
+        })
+        .catch(err => next(err))
+    }
   }
 }
 

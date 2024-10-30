@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       Teacher.hasMany(models.AvailableDay, {
         foreignKey: 'teacherId'
       })
+
+      Teacher.belongsTo(models.LessonDurationMinute, {
+        foreignKey: 'lessonDurationMinuteId'
+      })
     }
   }
   Teacher.init({
@@ -31,10 +35,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     classLink: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    lessonDurationMinute: {
-      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

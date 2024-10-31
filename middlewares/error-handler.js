@@ -5,7 +5,7 @@ function generalErrorHandler (err, req, res, next) {
     req.flash('error_messages', `${err}`)
   }
 
-  const userStatus = req.user.status
+  const userStatus = req.user?.status
   if (!req.get('Referer')) {
     // redirect back is deprecated due to safety issue on express@4.21.1
     // Suggest using res.redirect('Referer' || '/') instead of res.redirect('back')

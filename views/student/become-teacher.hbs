@@ -45,7 +45,7 @@
     </div>
     <div class="mb-3">
       <label class="form-check-label" for="lessonDurationMinuteId">單堂課程時間（分鐘）</label>
-      <select class="form-select" id="lessonDurationMinuteId" name="lessonDurationMinuteId">
+      <select class="form-select" id="lessonDurationMinuteId" name="lessonDurationMinuteId" required>
         {{#each lessonDurationMinutes}}
         <option value="{{this.id}}">{{this.durationMinute}} minutes</option>
         {{/each}}

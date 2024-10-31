@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local')
 const GoogleStrategy = require('passport-google-oauth20')
 const bcrypt = require('bcryptjs')
 
-const { User, Student, sequelize } = require('../models')
+const { User, Student, Teacher, AvailableDay, LessonDurationMinute, sequelize } = require('../models')
 
 passport.use(new LocalStrategy(
   {
@@ -88,7 +88,14 @@ passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     attributes: { exclude: ['password'] },
     include: [
-      { model: Student }
+      { model: Student },
+      {
+        model: Teacher,
+        include: [
+          { model: AvailableDay },
+          { model: LessonDurationMinute }
+        ]
+      }
     ]
   })
     .then(user => cb(null, user.toJSON()))

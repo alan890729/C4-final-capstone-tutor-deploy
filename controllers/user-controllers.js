@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User, Student, Teacher, AvailableDay, sequelize } = require('../models')
+const { User, Student, Teacher, AvailableDay, LessonDurationMinute, sequelize } = require('../models')
 
 const userControllers = {
   getSignup (req, res, next) {
@@ -82,7 +82,13 @@ const userControllers = {
           return User.findByPk(targetUserId, {
             attributes: { exclude: ['password'] },
             include: [
-              { model: Teacher, include: [{ model: AvailableDay }] }
+              {
+                model: Teacher,
+                include: [
+                  { model: AvailableDay },
+                  { model: LessonDurationMinute }
+                ]
+              }
             ]
           })
         })

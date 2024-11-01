@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-12 col-sm-4 col-lg-12 profile-avatar-container mb-5 mx-auto mx-md-0">
+    <img src="https://loremflickr.com/320/240/parrot" alt="user avatar" class="img-fluid w-100 profile-avatar">
+  </div>
+  <div class="col-12 col-sm-8 col-lg-12 profile-personal-info-container">
+    <div class="mb-5">
+      <h1 class="mb-5">{{user.name}}</h1>
+      <h5>Nation</h5>
+      {{#ifCondStrictEqual user.status 'teacher'}}<h5>Rating</h5>{{/ifCondStrictEqual}}
+      <div>
+        <h5>About Me</h5>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, blanditiis. Consequatur dicta eius
+          quas
+          iste
+          quaerat illo cupiditate. Recusandae quod quam dolorem omnis nihil voluptate totam ut consequuntur
+          commodi
+          tempore?
+        </p>
+      </div>
+    </div>
+    <div>
+      <a href="#">
+        <button class="btn btn-lg btn-secondary mb-5">Edit</button>
+      </a>
+    </div>
+  </div>
+</div>

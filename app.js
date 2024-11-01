@@ -13,9 +13,11 @@ const routes = require('./routes')
 const { generalMessageHandler } = require('./middlewares/messages-handler')
 const { generalErrorHandler } = require('./middlewares/error-handler')
 const { passUserToTemplate } = require('./middlewares/pass-user-to-template')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 const hbs = create({
-  extname: '.hbs'
+  extname: '.hbs',
+  helpers: handlebarsHelpers
 })
 const app = express()
 const port = 3000

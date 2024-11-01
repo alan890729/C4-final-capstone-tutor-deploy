@@ -1,43 +1,19 @@
 <section class="mt-5">
   <div class="row">
+    {{#if targetUser}}
+    {{> target-user-profile}}
+    {{else}}
     <div class="col-lg-3">
-      <div class="row">
-        <div class="col-12 col-sm-4 col-lg-12 profile-avatar-container mb-5 mx-auto mx-md-0">
-          <img src="https://loremflickr.com/320/240/parrot" alt="user avatar" class="img-fluid w-100 profile-avatar">
-        </div>
-        <div class="col-12 col-sm-8 col-lg-12 profile-personal-info-container">
-          <div class="mb-5">
-            <h1 class="mb-5">{{user.name}}</h1>
-            <h4>Nation</h4>
-            <div>
-              <h4>About Me</h4>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, blanditiis. Consequatur dicta eius
-                quas
-                iste
-                quaerat illo cupiditate. Recusandae quod quam dolorem omnis nihil voluptate totam ut consequuntur
-                commodi
-                tempore?
-              </p>
-            </div>
-          </div>
-          <div>
-            <a href="#">
-              <button class="btn btn-lg btn-secondary mb-5 mb-lg-0">Edit</button>
-            </a>
-          </div>
-        </div>
-      </div>
+      {{> my-profile/profile-avatar-and-personal-info}}
     </div>
     <div class="col-lg-9">
-      <div class="min-height-200">
-        <h4>New Schedule</h4>
-      </div>
-      <div>
-        <h4>Lesson History</h4>
-      </div>
-      <div>
-        <h4>我的學習時數名次</h4>
-      </div>
+      {{#ifCondStrictEqual user.status 'student'}}
+      {{> my-profile/profile-student-info}}
+      {{/ifCondStrictEqual}}
+      {{#ifCondStrictEqual user.status 'teacher'}}
+      {{> my-profile/profile-teacher-info}}
+      {{/ifCondStrictEqual}}
     </div>
+    {{/if}}
   </div>
 </section>

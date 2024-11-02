@@ -1,0 +1,22 @@
+<section class="mt-5">
+  <form action="/user/profile/{{user.id}}/edit?_method=PUT" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="avatar" class="form-label fs-4">Avatar</label>
+      <input type="file" class="form-control" id="avatar" name="avatar" value="{{user.name}}">
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label fs-4">Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required>
+    </div>
+    <div class="mb-3">
+      <label for="self-intro" class="form-label fs-4">About Me</label>
+      <textarea class="form-control" id="self-intro" name="selfIntro" rows="5">{{user.selfIntro}}</textarea>
+    </div>
+    {{#ifCondStrictEqual user.status 'teacher'}}
+    {{> teacher-form}}
+    {{/ifCondStrictEqual}}
+    <div class="mb-3">
+      <button type="submit" class="btn btn-secondary">Submit</button>
+    </div>
+  </form>
+</section>

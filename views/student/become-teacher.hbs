@@ -1,56 +1,6 @@
 <section class="mt-5">
   <form action="/student/become-teacher/{{user.id}}" method="post">
-    <div class="mb-3">
-      <label for="class-intro" class="form-label fs-4">Class Introduction</label>
-      <textarea class="form-control" id="class-intro" name="classIntro" rows="5" required></textarea>
-    </div>
-    <div class="mb-3">
-      <label for="teaching-style" class="form-label fs-4">Your Teaching Style</label>
-      <textarea class="form-control" id="teaching-style" name="teachingStyle" rows="5" required></textarea>
-    </div>
-    <div class="mb-3">
-      <label for="class-link" class="form-label fs-4">課程視訊連結</label>
-      <input type="url" class="form-control" id="class-link" name="classLink" required>
-    </div>
-    <div class="mb-3">
-      <h4>開放預約</h4>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-0" name="availableDays" value="0">
-        <label class="form-check-label" for="day-0">Sun.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-1" name="availableDays" value="1">
-        <label class="form-check-label" for="day-1">Mon.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-2" name="availableDays" value="2">
-        <label class="form-check-label" for="day-2">Tue.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-3" name="availableDays" value="3">
-        <label class="form-check-label" for="day-3">Wed.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-4" name="availableDays" value="4">
-        <label class="form-check-label" for="day-4">Thur.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-5" name="availableDays" value="5">
-        <label class="form-check-label" for="day-5">Fri.</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="day-6" name="availableDays" value="6">
-        <label class="form-check-label" for="day-6">Sat.</label>
-      </div>
-    </div>
-    <div class="mb-3">
-      <label class="form-check-label" for="lessonDurationMinuteId">單堂課程時間（分鐘）</label>
-      <select class="form-select" id="lessonDurationMinuteId" name="lessonDurationMinuteId" required>
-        {{#each lessonDurationMinutes}}
-        <option value="{{this.id}}">{{this.durationMinute}} minutes</option>
-        {{/each}}
-      </select>
-    </div>
+    {{> teacher-form}}
     <div class="mb-3">
       <button type="submit" class="btn btn-secondary">Submit</button>
     </div>

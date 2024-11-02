@@ -7,6 +7,7 @@ const express = require('express')
 const { create } = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 
 const passport = require('./config/passport')
 const routes = require('./routes')
@@ -28,6 +29,7 @@ app.set('views', './views')
 
 app.use('/public', express.static(path.resolve(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,

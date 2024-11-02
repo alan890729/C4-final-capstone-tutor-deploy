@@ -35,6 +35,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'student'
+    },
+    avatar: {
+      type: DataTypes.STRING
+    },
+    selfIntro: {
+      type: DataTypes.TEXT
     }
   }, {
     sequelize,

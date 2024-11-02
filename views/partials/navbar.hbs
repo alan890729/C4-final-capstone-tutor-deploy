@@ -14,9 +14,12 @@
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <ul class="navbar-nav me-auto">
           {{#if user}}
+            {{#ifCondStrictEqual user.status 'admin'}}
+            {{else}}
             <li class="nav-item">
               <a class="nav-link" href="/user/profile/{{user.id}}">我的主頁</a>
             </li>
+            {{/ifCondStrictEqual}}
             {{#ifCondStrictEqual user.status 'student'}}
             <li class="nav-item">
               <a class="nav-link" href="/student/become-teacher">成為老師</a>

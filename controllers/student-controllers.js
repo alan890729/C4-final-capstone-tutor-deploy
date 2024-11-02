@@ -1,11 +1,19 @@
-const { LessonDurationMinute, User, Student, Teacher, AvailableDay, sequelize } = require('../models')
+const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, sequelize } = require('../models')
 
 const studentControllers = {
   getBecomeTeacherPage (req, res, next) {
-    return LessonDurationMinute.findAll()
-      .then(lessonDurationMinutes => {
-        lessonDurationMinutes = lessonDurationMinutes.map(minute => minute.toJSON())
-        return res.render('student/become-teacher', { lessonDurationMinutes })
+    return Promise.all([
+      LessonDurationMinute.findAll({
+        attributes: ['id', 'durationMinute'],
+        raw: true
+      }),
+      DaysPerWeek.findAll({
+        attributes: ['name', 'day'],
+        raw: true
+      })
+    ])
+      .then(([lessonDurationMinutes, daysPerWeek]) => {
+        return res.render('student/become-teacher', { lessonDurationMinutes, daysPerWeek })
       })
       .catch(err => next(err))
   },

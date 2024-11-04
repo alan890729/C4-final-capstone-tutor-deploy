@@ -1,11 +1,25 @@
 <div>
   <h4>New Schedule</h4>
 </div>
-<div>
-  <h4>Class Introduction</h4>
+<div class="card mb-3">
+  <h5 class="card-header">Class Introduction</h5>
+  <div class="card-body">
+    {{#if user.Teacher.classIntro}}
+    <p class="card-text">{{user.Teacher.classIntro}}</p>
+    {{else}}
+    <p class="card-text text-center text-body-secondary">- nothing here -</p>
+    {{/if}}
+  </div>
 </div>
-<div>
-  <h4>Your Teaching Style</h4>
+<div class="card mb-3">
+  <h5 class="card-header">Teaching Style</h5>
+  <div class="card-body">
+    {{#if user.Teacher.teachingStyle}}
+    <p class="card-text">{{user.Teacher.teachingStyle}}</p>
+    {{else}}
+    <p class="card-text text-center text-body-secondary">- nothing here -</p>
+    {{/if}}
+  </div>
 </div>
 <div>
   <h4>Recent Reviewed</h4>

@@ -11,6 +11,10 @@
   object-fit: cover;
 }
 
+.country-selector-container {
+  cursor: pointer;
+}
+
 @media screen and (min-width: 992px) {
   .profile-personal-info-container {
     max-width: 300px;

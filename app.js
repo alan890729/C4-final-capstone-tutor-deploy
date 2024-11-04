@@ -28,6 +28,7 @@ app.set('view engine', 'hbs')
 app.set('views', './views')
 
 app.use('/public', express.static(path.resolve(__dirname, 'public')))
+app.use('/upload', express.static(path.resolve(__dirname, 'upload')))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(session({

@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const ct = require('countries-and-timezones')
 
 const { User, Student, Teacher, AvailableDay, LessonDurationMinute, DaysPerWeek, sequelize } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
@@ -107,6 +108,8 @@ const userControllers = {
     const targetUserId = Number(req.params.userId)
     const currentUser = req.user
     if (targetUserId !== currentUser.id) throw new Error('User didn\'t exist!')
+
+    res.locals.countries = Object.values(ct.getAllCountries())
     if (currentUser.status === 'student') return res.render('user/edit-profile')
 
     return Promise.all([
@@ -137,9 +140,11 @@ const userControllers = {
       if (currentUser.id !== userId) throw new Error('User didn\'t exist!')
 
       const name = req.body.name?.trim()
+      const countryCode = req.body.countryCode
       const selfIntro = req.body.selfIntro?.trim()
       const file = req.file
       if (!name) throw new Error('name is required!')
+      if (countryCode !== '' && !ct.getCountry(countryCode)) throw new Error('Invalid input on country code!')
 
       let transaction
       if (currentUser.status === 'student') {
@@ -155,6 +160,7 @@ const userControllers = {
           await user.update({
             name,
             selfIntro,
+            countryCode,
             avatar: filePath || user.avatar
           }, { transaction })
 
@@ -201,6 +207,7 @@ const userControllers = {
         await user.update({
           name,
           selfIntro,
+          countryCode,
           avatar: filePath || user.avatar
         }, { transaction })
 

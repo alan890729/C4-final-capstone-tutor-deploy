@@ -1,32 +1,57 @@
-<div class="col-12 col-lg-8">
+<div class="col-12 {{#ifCondStrictEqual user.status 'student'}}col-lg-8{{/ifCondStrictEqual}}">
   <div class="row">
     <div class="col-12 col-sm-6 profile-avatar-container mb-5 mx-auto mx-sm-0">
-      <img src="https://loremflickr.com/320/240/parrot" alt="user avatar" class="img-fluid w-100 profile-avatar">
+      <img src="{{targetUser.avatar}}" alt="user avatar" class="img-fluid w-100 profile-avatar">
     </div>
     <div class="col-12 col-sm-6 flex-grow-1 mb-5">
       <h1 class="mb-5">{{targetUser.name}}</h1>
-      <h5>Nation</h5>
+      <h5>Nation: {{countryCodeToName targetUser.countryCode}}</h5>
       <h5 class="mb-5">Rating</h5>
+      {{#ifCondStrictEqual user.status 'student'}}
       <a href="" class="d-lg-none text-decoration-none">前往預約上課</a>
+      {{/ifCondStrictEqual}}
     </div>
   </div>
   <div>
-    <div>
-      <h5>About Me</h5>
+    <div class="card mb-3">
+      <h5 class="card-header">About Me</h5>
+      <div class="card-body">
+        {{#if targetUser.selfIntro}}
+        <p class="card-text">{{targetUser.selfIntro}}</p>
+        {{else}}
+        <p class="card-text text-center text-body-secondary">- nothing here -</p>
+        {{/if}}
+      </div>
     </div>
-    <div>
-      <h5>Class Introduction</h5>
+    <div class="card mb-3">
+      <h5 class="card-header">Class Introduction</h5>
+      <div class="card-body">
+        {{#if targetUser.Teacher.classIntro}}
+        <p class="card-text">{{targetUser.Teacher.classIntro}}</p>
+        {{else}}
+        <p class="card-text text-center text-body-secondary">- nothing here -</p>
+        {{/if}}
+      </div>
     </div>
-    <div>
-      <h5>Teaching Style</h5>
+    <div class="card mb-3">
+      <h5 class="card-header">Teaching Style</h5>
+      <div class="card-body">
+        {{#if targetUser.Teacher.teachingStyle}}
+        <p class="card-text">{{targetUser.Teacher.teachingStyle}}</p>
+        {{else}}
+        <p class="card-text text-center text-body-secondary">- nothing here -</p>
+        {{/if}}
+      </div>
     </div>
     <div>
       <h5>Lesson History</h5>
     </div>
   </div>
 </div>
+{{#ifCondStrictEqual user.status 'student'}}
 <div class="col-4">
   <div class="d-none d-lg-block">
     <h5>預約上課</h5>
   </div>
 </div>
+{{/ifCondStrictEqual}}

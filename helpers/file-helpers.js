@@ -11,7 +11,7 @@ function localFileHandler (file) {
 
     return fs.promises.readFile(path.resolve(__dirname, '..', originPath))
       .then(data => fs.promises.writeFile(path.resolve(__dirname, '..', newPath), data))
-      .then(() => resolve(newPath))
+      .then(() => resolve(`/${newPath}`))
       .catch(err => reject(err))
   })
 }

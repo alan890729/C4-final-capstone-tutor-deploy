@@ -9,6 +9,26 @@
       <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required>
     </div>
     <div class="mb-3">
+      <div class="country-selector-container">
+        <div>
+          <label for="country-code" class="form-label fs-4">Country</label>
+          <input type="hidden" id="country-code" name="countryCode" value="{{user.countryCode}}">
+        </div>
+        <p class="form-control country-name" data-bs-toggle="dropdown">{{countryCodeToName user.countryCode}}</p>
+        <ul class="dropdown-menu">
+          <li id="country-search-bar">
+            <input type="text" class="w-100" placeholder="Search Country name...">
+          </li>
+          <div>
+            <li class="dropdown-item" data-country-code="">not mentioned</li>
+            {{#each countries}}
+            <li class="dropdown-item" data-country-code="{{this.id}}">{{this.name}}</li>
+            {{/each}}
+          </div>
+        </ul>
+      </div>
+    </div>
+    <div class="mb-3">
       <label for="self-intro" class="form-label fs-4">About Me</label>
       <textarea class="form-control" id="self-intro" name="selfIntro" rows="5">{{user.selfIntro}}</textarea>
     </div>
@@ -20,3 +40,5 @@
     </div>
   </form>
 </section>
+
+<script src="/public/scripts/country-selector.js"></script>

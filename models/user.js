@@ -41,7 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     selfIntro: {
       type: DataTypes.TEXT
-    }
+    },
+    countryCode: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

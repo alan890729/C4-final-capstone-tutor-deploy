@@ -9,11 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      total_learning_hours: {
-        type: Sequelize.DECIMAL(10, 1),
-        allowNull: false,
-        defaultValue: 0
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

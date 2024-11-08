@@ -84,22 +84,39 @@ passport.serializeUser((user, cb) => {
   return cb(null, user.id)
 })
 
-passport.deserializeUser((id, cb) => {
-  return User.findByPk(id, {
-    attributes: { exclude: ['password'] },
-    include: [
-      { model: Student },
-      {
-        model: Teacher,
+passport.deserializeUser(async (id, cb) => {
+  try {
+    let user = await User.findByPk(id, { attributes: ['status'] })
+
+    if (user.status === 'admin') {
+      user = await User.findByPk(id, {
+        attributes: { exclude: ['password'] }
+      })
+    } else if (user.status === 'student') {
+      user = await User.findByPk(id, {
+        attributes: { exclude: ['password'] },
+        include: [{ model: Student }]
+      })
+    } else if (user.status === 'teacher') {
+      user = await User.findByPk(id, {
+        attributes: { exclude: ['password'] },
         include: [
-          { model: AvailableDay },
-          { model: LessonDurationMinute }
+          {
+            model: Teacher,
+            include: [
+              { model: AvailableDay },
+              { model: LessonDurationMinute }
+            ]
+          }
         ]
-      }
-    ]
-  })
-    .then(user => cb(null, user.toJSON()))
-    .catch(err => cb(err))
+      })
+    }
+    return cb(null, user.toJSON())
+  } catch (err) {
+    // fuck the error handling, i don't know how to deal with deserialize error handle.
+    // return cb(err)
+    return cb(null, false)
+  }
 })
 
 module.exports = passport

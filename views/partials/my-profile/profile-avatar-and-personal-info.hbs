@@ -5,8 +5,12 @@
   <div class="col-12 col-sm-8 col-lg-12 profile-personal-info-container">
     <div class="mb-5">
       <h1 class="mb-5">{{user.name}}</h1>
-      <h5>Nation: {{countryCodeToName user.countryCode}}</h5>
-      {{#ifCondStrictEqual user.status 'teacher'}}<h5>Rating</h5>{{/ifCondStrictEqual}}
+      <h5><i class="fa-solid fa-globe"></i> {{countryCodeToName user.countryCode}}</h5>
+      {{#ifCondStrictEqual user.status 'teacher'}}
+      {{#if user.rating}}
+      <h5><i class="fa-solid fa-star"></i> {{user.rating}}</h5>
+      {{/if}}
+      {{/ifCondStrictEqual}}
       <div>
         <h5>About Me</h5>
         <p>{{user.selfIntro}}</p>

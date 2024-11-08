@@ -1,9 +1,72 @@
 <div>
-  <h4>New Schedule</h4>
+  <div class="card mb-3">
+    <h4 class="card-header">New Schedule</h4>
+    <div class="card-body">
+      {{#if user.futureReservations}}
+      <div class="row row-gap-3">
+        {{#each user.futureReservations}}
+        <div class="col-12 col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">Teacher's Name: {{this.Teacher.User.name}}</p>
+              <p class="card-text">Start From: {{formatDatetime this.startFrom}}</p>
+              <p class="card-text">End At: {{formatDatetime this.endAt}}</p>
+              <p class="card-text">
+                <a href="{{this.Teacher.classLink}}">Session Link</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <p class="card-text text-center text-body-secondary">- nothing here -</p>
+      {{/if}}
+    </div>
+  </div>
 </div>
 <div>
-  <h4>Lesson History</h4>
+  <div class="card mb-3">
+    <h4 class="card-header">Lesson History</h4>
+    <div class="card-body">
+      {{#if user.pastReservations}}
+      <div class="row row-gap-3">
+        {{#each user.pastReservations}}
+        <div class="col-12 col-md-6 d-flex align-items-center">
+          <div class="past-reservation-teacher-avatar me-3">
+            <img src="{{this.Teacher.User.avatar}}" alt="teacher avatar" class="rounded-circle img-fluid w-100 profile-avatar">
+          </div>
+          <div class="card w-100">
+            <div class="card-body">
+              <h5 class="card-title">{{this.Teacher.User.name}}</h5>
+              <p class="card-text">Start From: {{formatDatetime this.startFrom}}</p>
+              <p class="card-text">End At: {{formatDatetime this.endAt}}</p>
+              {{#if this.Comment}}
+              <a href="#" class="btn btn-primary disabled">Commented!</a>
+              {{else}}
+              <a href="#" class="btn btn-primary">Score</a>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <p class="card-text text-center text-body-secondary">- nothing here -</p>
+      {{/if}}
+    </div>
+  </div>
 </div>
 <div>
-  <h4>我的學習時數名次</h4>
+  <h4>我的學習時數與名次</h4>
+  {{#if user.ranking}}
+  <p>Ranking: {{user.ranking}}</p>
+  {{else}}
+  <p>Ranking: no data</p>
+  {{/if}}
+  {{#if user.totalLearningTime}}
+  <p>Total Learning Time: {{user.totalLearningTime}} hours</p>
+  {{else}}
+  <p>Total Learning Time: no data</p>
+  {{/if}}
 </div>

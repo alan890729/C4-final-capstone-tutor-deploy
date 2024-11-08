@@ -15,6 +15,14 @@
   cursor: pointer;
 }
 
+.past-reservation-teacher-avatar {
+  max-width: 80px;
+}
+
+.students-rankings-avatar {
+  max-width: 80px;
+}
+
 @media screen and (min-width: 992px) {
   .profile-personal-info-container {
     max-width: 300px;

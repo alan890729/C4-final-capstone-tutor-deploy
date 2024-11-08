@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs')
 const ct = require('countries-and-timezones')
 
-const { User, Student, Teacher, AvailableDay, LessonDurationMinute, DaysPerWeek, sequelize } = require('../models')
+const { User, Student, Teacher, AvailableDay, LessonDurationMinute, DaysPerWeek, Reservation, Comment, sequelize, Sequelize } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
+const { preciseRound } = require('../helpers/math-helpers')
 
 const userControllers = {
   getSignup (req, res, next) {
@@ -67,40 +68,112 @@ const userControllers = {
     })
   },
 
-  getProfile (req, res, next) {
-    const targetUserId = Number(req.params.userId)
-    const currentUserId = req.user.id
+  async getProfile (req, res, next) {
+    try {
+      const targetUserId = Number(req.params.userId)
+      const currentUserId = req.user.id
 
-    if (targetUserId === currentUserId) {
-      return res.render('user/profile')
-    } else {
-      return User.findByPk(targetUserId, {
-        attributes: ['status']
-      })
-        .then(user => {
-          if (!user) throw new Error('User not found!')
-          if (user.status === 'student' || user.status === 'admin') throw new Error('不能查看其他學生的個人資料!')
-
-          return User.findByPk(targetUserId, {
-            attributes: { exclude: ['password'] },
-            include: [
-              {
-                model: Teacher,
-                include: [
-                  { model: AvailableDay },
-                  { model: LessonDurationMinute }
-                ]
-              }
-            ]
+      if (targetUserId === currentUserId) {
+        const user = res.locals.user
+        if (user.status === 'student') {
+          const futureReservations = await Reservation.findAll({
+            where: {
+              studentId: user.Student.id,
+              isExpired: false
+            },
+            include: [{ model: Teacher, include: [{ model: User, exclude: ['password'] }] }],
+            order: [['startFrom', 'ASC']]
           })
-        })
-        .then(userWithTeacherStatus => {
-          const targetUser = userWithTeacherStatus.toJSON()
-          targetUser.Teacher.AvailableDays = userWithTeacherStatus.Teacher.AvailableDays.map(day => day.day)
+          const pastReservations = await Reservation.findAll({
+            where: {
+              studentId: user.Student.id,
+              isExpired: true
+            },
+            include: [
+              { model: Teacher, include: [{ model: User, exclude: ['password'] }] },
+              { model: Comment }
+            ],
+            order: [['startFrom', 'DESC']]
+          })
+          let learingTimeSort = await Reservation.findAll({
+            attributes: [
+              'studentId',
+              [Sequelize.fn('SUM', Sequelize.col('duration_hours')), 'totalLearningTime']
+            ],
+            where: { isExpired: true },
+            group: 'studentId',
+            order: [['totalLearningTime', 'DESC']]
+          })
+          learingTimeSort = learingTimeSort.map(t => t.toJSON())
+          const totalLearningTime = learingTimeSort.find(t => t.studentId === user.Student.id)?.totalLearningTime
 
-          res.render('user/profile', { targetUser })
+          user.futureReservations = futureReservations.map(r => r.toJSON())
+          user.pastReservations = pastReservations.map(r => r.toJSON())
+          user.ranking = learingTimeSort.findIndex(t => t.totalLearningTime === totalLearningTime) + 1
+          user.totalLearningTime = totalLearningTime
+        } else if (user.status === 'teacher') {
+          const [rating] = await Comment.findAll({
+            attributes: [[Sequelize.fn('AVG', Sequelize.col('rate')), 'avgRating']],
+            where: { teacherId: user.Teacher.id }
+          })
+          const futureReservations = await Reservation.findAll({
+            where: {
+              teacherId: user.Teacher.id,
+              isExpired: false
+            },
+            include: [{ model: Student, include: [{ model: User, exclude: ['password'] }] }],
+            order: [['startFrom', 'ASC']]
+          })
+          const comments = await Comment.findAll({
+            where: { teacherId: user.Teacher.id },
+            order: [['createdAt', 'DESC']]
+          })
+
+          user.rating = rating.toJSON().avgRating ? preciseRound(rating.toJSON().avgRating, 1) : undefined
+          user.futureReservations = futureReservations.map(r => r.toJSON())
+          user.comments = comments.map(c => c.toJSON())
+        }
+
+        return res.render('user/profile')
+      } else {
+        let targetUser = await User.findByPk(targetUserId, {
+          attributes: ['status']
         })
-        .catch(err => next(err))
+        if (!targetUser) throw new Error('User not found!')
+        if (targetUser.status === 'student' || targetUser.status === 'admin') throw new Error('不能查看其他學生的個人資料!')
+
+        targetUser = await User.findByPk(targetUserId, {
+          attributes: { exclude: ['password'] },
+          include: [
+            {
+              model: Teacher,
+              include: [
+                { model: AvailableDay },
+                { model: LessonDurationMinute }
+              ]
+            }
+          ]
+        })
+
+        const [rating] = await Comment.findAll({
+          attributes: [[Sequelize.fn('AVG', Sequelize.col('rate')), 'avgRating']],
+          where: { teacherId: targetUser.Teacher.id }
+        })
+        const comments = await Comment.findAll({
+          attributes: ['text', 'rate'],
+          where: { teacherId: targetUser.Teacher.id },
+          order: [['createdAt', 'DESC']]
+        })
+
+        targetUser = targetUser.toJSON()
+        targetUser.Teacher.AvailableDays = targetUser.Teacher.AvailableDays.map(day => day.day)
+        targetUser.rating = rating.toJSON().avgRating ? preciseRound(rating.toJSON().avgRating, 1) : undefined
+        targetUser.comments = comments.map(c => c.toJSON())
+
+        return res.render('user/profile', { targetUser })
+      }
+    } catch (err) {
+      return next(err)
     }
   },
 

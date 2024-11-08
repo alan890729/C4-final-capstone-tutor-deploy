@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
       Teacher.belongsTo(models.LessonDurationMinute, {
         foreignKey: 'lessonDurationMinuteId'
       })
+
+      Teacher.hasMany(models.Reservation, {
+        foreignKey: 'teacherId'
+      })
+
+      Teacher.hasMany(models.Comment, {
+        foreignKey: 'teacherId'
+      })
     }
   }
   Teacher.init({

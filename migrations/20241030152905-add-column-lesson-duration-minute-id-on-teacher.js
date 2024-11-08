@@ -27,7 +27,7 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.addColumn('Teacher', 'lesson_duration_minute', {
+      await queryInterface.addColumn('Teachers', 'lesson_duration_minute', {
         type: Sequelize.INTEGER,
         allowNull: false
       })

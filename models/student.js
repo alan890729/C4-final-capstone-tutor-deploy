@@ -14,15 +14,17 @@ module.exports = (sequelize, DataTypes) => {
       Student.belongsTo(models.User, {
         foreignKey: 'userId'
       })
+
+      Student.hasMany(models.Reservation, {
+        foreignKey: 'studentId'
+      })
+
+      Student.hasMany(models.Comment, {
+        foreignKey: 'studentId'
+      })
     }
   }
-  Student.init({
-    totalLearningHours: {
-      type: DataTypes.DECIMAL(10, 1),
-      allowNull: false,
-      defaultValue: 0
-    }
-  }, {
+  Student.init({}, {
     sequelize,
     modelName: 'Student',
     tableName: 'Students',

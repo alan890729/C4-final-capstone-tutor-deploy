@@ -1,8 +1,33 @@
 <div>
-  <h4>New Schedule</h4>
+  {{!-- <h4>New Schedule</h4> --}}
+  <div class="card mb-3">
+    <h4 class="card-header">New Schedule</h4>
+    <div class="card-body">
+      {{#if user.futureReservations}}
+      <div class="row row-gap-3">
+        {{#each user.futureReservations}}
+        <div class="col-12 col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">Student's Name: {{this.Student.User.name}}</p>
+              <p class="card-text">Start From: {{formatDatetime this.startFrom}}</p>
+              <p class="card-text">End At: {{formatDatetime this.endAt}}</p>
+              <p class="card-text">
+                <a href="{{../user.Teacher.classLink}}">Session Link</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <p class="card-text text-center text-body-secondary">- nothing here -</p>
+      {{/if}}
+    </div>
+  </div>
 </div>
 <div class="card mb-3">
-  <h5 class="card-header">Class Introduction</h5>
+  <h4 class="card-header">Class Introduction</h4>
   <div class="card-body">
     {{#if user.Teacher.classIntro}}
     <p class="card-text">{{user.Teacher.classIntro}}</p>
@@ -12,7 +37,7 @@
   </div>
 </div>
 <div class="card mb-3">
-  <h5 class="card-header">Teaching Style</h5>
+  <h4 class="card-header">Teaching Style</h4>
   <div class="card-body">
     {{#if user.Teacher.teachingStyle}}
     <p class="card-text">{{user.Teacher.teachingStyle}}</p>
@@ -21,6 +46,18 @@
     {{/if}}
   </div>
 </div>
-<div>
-  <h4>Recent Reviewed</h4>
+<div class="card mb-3">
+  <h4 class="card-header">Recent Reviewed</h4>
+  <div class="card-body">
+    {{#if user.comments}}
+    {{#each user.comments}}
+    <p class="card-text">
+      <span class="badge text-bg-secondary"><i class="fa-solid fa-star"></i> {{this.rate}}</span>
+      {{this.text}}
+    </p>
+    {{/each}}
+    {{else}}
+    <p class="card-text text-center text-body-secondary">- nothing here -</p>
+    {{/if}}
+  </div>
 </div>

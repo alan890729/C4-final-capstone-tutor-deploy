@@ -5,11 +5,10 @@
     </div>
     <div class="col-12 col-sm-6 flex-grow-1 mb-5">
       <h1 class="mb-5">{{targetUser.name}}</h1>
-      <h5>Nation: {{countryCodeToName targetUser.countryCode}}</h5>
-      <h5 class="mb-5">Rating</h5>
-      {{#ifCondStrictEqual user.status 'student'}}
-      <a href="" class="d-lg-none text-decoration-none">前往預約上課</a>
-      {{/ifCondStrictEqual}}
+      <h5><i class="fa-solid fa-globe"></i> {{countryCodeToName targetUser.countryCode}}</h5>
+      {{#if targetUser.rating}}
+      <h5 class="mb-5"><i class="fa-solid fa-star"></i> {{targetUser.rating}}</h5>
+      {{/if}}
     </div>
   </div>
   <div>
@@ -43,14 +42,26 @@
         {{/if}}
       </div>
     </div>
-    <div>
-      <h5>Lesson History</h5>
+    <div class="card mb-3">
+      <h5 class="card-header">Recent Reviewed</h5>
+      <div class="card-body">
+        {{#if targetUser.comments}}
+        {{#each targetUser.comments}}
+        <p class="card-text">
+          <span class="badge text-bg-secondary"><i class="fa-solid fa-star"></i> {{this.rate}}</span>
+          {{this.text}}
+        </p>
+        {{/each}}
+        {{else}}
+        <p class="card-text text-center text-body-secondary">- nothing here -</p>
+        {{/if}}
+      </div>
     </div>
   </div>
 </div>
 {{#ifCondStrictEqual user.status 'student'}}
-<div class="col-4">
-  <div class="d-none d-lg-block">
+<div class="col-12 col-lg-4">
+  <div>
     <h5>預約上課</h5>
   </div>
 </div>

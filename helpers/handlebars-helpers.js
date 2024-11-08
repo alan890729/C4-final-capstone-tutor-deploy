@@ -1,4 +1,5 @@
 const ct = require('countries-and-timezones')
+const dayjs = require('dayjs')
 
 const handlebarsHelpers = {
   ifCondStrictEqual (a, b, options) {
@@ -13,6 +14,10 @@ const handlebarsHelpers = {
     const country = ct.getCountry(countryCode)
     if (!country) return 'not mentioned'
     return country.name
+  },
+
+  formatDatetime (datetime) {
+    return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss (dddd)')
   }
 }
 

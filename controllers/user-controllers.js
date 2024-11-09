@@ -4,6 +4,7 @@ const ct = require('countries-and-timezones')
 const { User, Student, Teacher, AvailableDay, LessonDurationMinute, DaysPerWeek, Reservation, Comment, sequelize, Sequelize } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const { preciseRound } = require('../helpers/math-helpers')
+const reservationTimeHelpers = require('../helpers/reservation-time-helpers')
 
 const userControllers = {
   getSignup (req, res, next) {
@@ -164,9 +165,18 @@ const userControllers = {
           where: { teacherId: targetUser.Teacher.id },
           order: [['createdAt', 'DESC']]
         })
+        let reservedLessons = await Reservation.findAll({
+          where: {
+            teacherId: targetUser.Teacher.id,
+            isExpired: false
+          }
+        })
 
         targetUser = targetUser.toJSON()
-        targetUser.Teacher.AvailableDays = targetUser.Teacher.AvailableDays.map(day => day.day)
+        const teacherAvailableDays = targetUser.Teacher.AvailableDays.map(day => day.day)
+        const perLessonDuration = targetUser.Teacher.LessonDurationMinute.durationMinute
+        reservedLessons = reservedLessons.map(r => r.toJSON())
+        targetUser.teacherAvailableDaysInTwoWeeks = reservationTimeHelpers.teacherAvailableDaysInTwoWeeks(teacherAvailableDays, perLessonDuration, reservedLessons)
         targetUser.rating = rating.toJSON().avgRating ? preciseRound(rating.toJSON().avgRating, 1) : undefined
         targetUser.comments = comments.map(c => c.toJSON())
 

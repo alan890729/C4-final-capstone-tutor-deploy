@@ -18,6 +18,10 @@ const handlebarsHelpers = {
 
   formatDatetime (datetime) {
     return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss (dddd)')
+  },
+
+  formatDateTimeCustom (datetime, format) {
+    return dayjs(datetime).format(format)
   }
 }
 

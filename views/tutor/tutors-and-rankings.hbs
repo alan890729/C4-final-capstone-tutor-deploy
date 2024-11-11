@@ -31,30 +31,43 @@
         </div>
         {{/each}}
       </div>
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="?page={{paginators.prevPage}}">Previous</a></li>
+          {{#each paginators.pageBtnArr}}
+          <li class="page-item {{#if this.isDisabled}} disabled {{/if}} {{#if this.isActive}} active {{/if}}">
+            <a class="page-link" href="?page={{this.pageNum}}">{{this.pageNum}}</a>
+          </li>
+          {{/each}}
+          <li class="page-item"><a class="page-link" href="?page={{paginators.nextPage}}">Next</a></li>
+        </ul>
+      </nav>
     </div>
     <div class="col-12 col-lg-3">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title text-center">學習時數總排行</h5>
-          {{#each studentRankings}}
-          <div class="card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4 d-flex align-items-center">
-                <div class="students-rankings-avatar mx-auto">
-                  <img src="{{this.Student.User.avatar}}" class="img-fluid rounded-circle profile-avatar"
-                    alt="student avatar">
+          <div class="overflow-auto" style="max-height: 100vh;">
+            {{#each studentRankings}}
+            <div class="card mb-3">
+              <div class="row g-0">
+                <div class="col-md-4 d-flex align-items-center">
+                  <div class="students-rankings-avatar mx-auto">
+                    <img src="{{this.Student.User.avatar}}" class="img-fluid rounded-circle profile-avatar"
+                      alt="student avatar">
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">NO.{{this.ranking}}</h5>
-                  <p class="m-0">{{this.Student.User.name}}</p>
-                  <p class="m-0">Learning Time: {{this.totalLearningTime}}</p>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">NO.{{this.ranking}}</h5>
+                    <p class="m-0">{{this.Student.User.name}}</p>
+                    <p class="m-0">Learning Time: {{this.totalLearningTime}}</p>
+                  </div>
                 </div>
               </div>
             </div>
+            {{/each}}
           </div>
-          {{/each}}
         </div>
       </div>
     </div>

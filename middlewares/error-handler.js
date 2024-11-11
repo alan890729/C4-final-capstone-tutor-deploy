@@ -15,7 +15,7 @@ function generalErrorHandler (err, req, res, next) {
       res.redirect('/admin') // 之後改後台主頁
       return next(err)
     } else if (userStatus === 'student' || userStatus === 'teacher') {
-      res.redirect('/') // 之後改前台主頁
+      res.redirect('/tutor')
       return next(err)
     } else {
       res.redirect('/signin')

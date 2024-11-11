@@ -22,8 +22,8 @@ router.get('/signin', userControllers.getSignin)
 router.post('/signin', passport.authenticate('local', { failureFlash: true, failureRedirect: '/signin' }), userControllers.postSignin)
 router.post('/logout', userControllers.postLogout)
 
-router.get('/', authenticate, isGeneralUser, (req, res, next) => {
-  return res.render('index')
+router.use('/', authenticate, isGeneralUser, (req, res, next) => {
+  return res.redirect('/tutor')
 })
 
 module.exports = router

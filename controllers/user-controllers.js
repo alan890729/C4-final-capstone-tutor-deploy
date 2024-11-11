@@ -58,7 +58,7 @@ const userControllers = {
     req.flash('success_messages', '登入成功!')
 
     if (req.user.status === 'admin') return res.redirect('/admin') // 之後改成導到後臺主頁
-    return res.redirect('/') // 之後改成導到前台主頁
+    return res.redirect('/tutor')
   },
 
   postLogout (req, res, next) {

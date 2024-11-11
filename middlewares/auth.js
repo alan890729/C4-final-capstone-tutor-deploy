@@ -18,7 +18,7 @@ function isStudent (req, res, next) {
   }
 
   req.flash('error_messages', '您不是學生身分，無法執行該操作!')
-  return res.redirect('/') // 前台頁面出來後改成直接導向前台主頁
+  return res.redirect('/tutor')
 }
 
 function isTeacher (req, res, next) {
@@ -30,7 +30,7 @@ function isTeacher (req, res, next) {
   }
 
   req.flash('error_messages', '您不是老師身分，無法執行該操作!')
-  return res.redirect('/') // 前台頁面出來後改成直接導向前台主頁
+  return res.redirect('/tutor')
 }
 
 function isGeneralUser (req, res, next) {
@@ -45,7 +45,7 @@ function isGeneralUser (req, res, next) {
 function isAdmin (req, res, next) {
   if (req.user.status !== 'admin') {
     req.flash('error_messages', 'No such page exist!')
-    return res.redirect('/') // 之後改，前台頁面出來後直接導到該路由而不是/
+    return res.redirect('/tutor')
   }
 
   return next()

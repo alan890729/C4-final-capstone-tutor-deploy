@@ -1,4 +1,7 @@
-const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, sequelize } = require('../models')
+const dayjs = require('dayjs')
+const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, Reservation, sequelize } = require('../models')
+const { teacherHasReservedLesson, studentHasReservedLesson } = require('../helpers/reservation-time-helpers')
+const { preciseDividedBy } = require('../helpers/math-helpers')
 
 const studentControllers = {
   getBecomeTeacherPage (req, res, next) {
@@ -74,6 +77,65 @@ const studentControllers = {
 
       req.flash('success_messages', '您已成為老師!')
       return res.redirect(`/user/profile/${userId}`)
+    } catch (err) {
+      return next(err)
+    }
+  },
+
+  async postReservation (req, res, next) {
+    try {
+      const teacherId = Number(req.params.teacherId)
+      const studentId = req.user.Student.id
+      let { reservationDateTimeSection } = req.body
+      if (!reservationDateTimeSection) throw new Error('You must select at least one lesson!')
+      if (typeof reservationDateTimeSection === 'string') {
+        reservationDateTimeSection = [reservationDateTimeSection]
+      }
+
+      const teacherReservations = await Reservation.findAll({
+        attributes: ['startFrom', 'endAt', 'teacherId'],
+        where: {
+          teacherId,
+          isExpired: false
+        }
+      })
+      const studentReservations = await Reservation.findAll({
+        attributes: ['startFrom', 'endAt', 'teacherId'],
+        where: {
+          studentId,
+          isExpired: false
+        }
+      })
+      const selectedLessons = reservationDateTimeSection.map(timeSection => {
+        const [startFrom, endAt] = timeSection.split(' - ')
+        return {
+          startFrom,
+          endAt
+        }
+      })
+
+      if (teacherHasReservedLesson(selectedLessons, teacherReservations) || studentHasReservedLesson(selectedLessons, studentReservations)) throw new Error('Some of the selected lessons have already been reserved, please select the lessons we provide, those are the lessons haven\'t reserved!!!!')
+
+      const transaction = await sequelize.transaction()
+      try {
+        await Promise.all(selectedLessons.map(async lesson => {
+          return Reservation.create({
+            startFrom: new Date(lesson.startFrom),
+            endAt: new Date(lesson.endAt),
+            durationHours: preciseDividedBy(dayjs(lesson.endAt).diff(dayjs(lesson.startFrom), 'minute'), 60, 1),
+            isExpired: false,
+            studentId,
+            teacherId
+          }, { transaction })
+        }))
+        await transaction.commit()
+      } catch (err) {
+        await transaction.rollback()
+        throw err
+      }
+
+      req.flash('success_messages', '預約成功!')
+      return res.redirect(`/user/profile/${req.user.id}`)
     } catch (err) {
       return next(err)
     }

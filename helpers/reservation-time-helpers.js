@@ -7,7 +7,7 @@ dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
 const reservationTimeHelpers = {
-  teacherAvailableDaysInTwoWeeks (teacherAvailableDays, perLessonDuration, reservedLessons) {
+  teacherAvailableDaysInTwoWeeks (teacherAvailableDays, perLessonDuration, teacherReservedLessons, studentReservedLessons) {
     const theFarestDayInTheFuture = 14
     const totalMinutes = 180
     const amountOfLessons = totalMinutes / perLessonDuration
@@ -31,7 +31,13 @@ const reservationTimeHelpers = {
             continue
           }
 
-          const isOccupied = reservedLessons.some(reservedLesson => {
+          const isOccupied = teacherReservedLessons.some(reservedLesson => {
+            const endAtInReservedLesson = endAt.isBetween(dayjs(reservedLesson.startFrom), dayjs(reservedLesson.endAt), null, '(]')
+            const startFromInReservedLesson = startFrom.isBetween(dayjs(reservedLesson.startFrom), dayjs(reservedLesson.endAt), null, '[)')
+            const incomingLessonEnvelopesReservedLesson = startFrom.isSameOrBefore(dayjs(reservedLesson.startFrom)) && endAt.isSameOrAfter(dayjs(reservedLesson.endAt))
+
+            return endAtInReservedLesson || startFromInReservedLesson || incomingLessonEnvelopesReservedLesson
+          }) || studentReservedLessons.some(reservedLesson => {
             const endAtInReservedLesson = endAt.isBetween(dayjs(reservedLesson.startFrom), dayjs(reservedLesson.endAt), null, '(]')
             const startFromInReservedLesson = startFrom.isBetween(dayjs(reservedLesson.startFrom), dayjs(reservedLesson.endAt), null, '[)')
             const incomingLessonEnvelopesReservedLesson = startFrom.isSameOrBefore(dayjs(reservedLesson.startFrom)) && endAt.isSameOrAfter(dayjs(reservedLesson.endAt))
@@ -55,6 +61,30 @@ const reservationTimeHelpers = {
     }
 
     return teacherAvailableDaysInTwoWeeks
+  },
+
+  teacherHasReservedLesson (selectedLessons, teacherReservations) {
+    return selectedLessons.some(lesson => {
+      return teacherReservations.some(r => {
+        const lessonStartFromInTeacherReservations = dayjs(lesson.startFrom).isBetween(dayjs(r.startFrom), dayjs(r.endAt), null, '[)')
+        const lessonEndAtInTeacherReservations = dayjs(lesson.endAt).isBetween(dayjs(r.startFrom), dayjs(r.endAt), null, '(]')
+        const lessonEnvolopesTeacherReservations = dayjs(lesson.startFrom).isSameOrBefore(dayjs(r.startFrom)) && dayjs(lesson.endAt).isSameOrAfter(dayjs(r.endAt))
+
+        return lessonStartFromInTeacherReservations || lessonEndAtInTeacherReservations || lessonEnvolopesTeacherReservations
+      })
+    })
+  },
+
+  studentHasReservedLesson (selectedLessons, studentReservations) {
+    return selectedLessons.some(lesson => {
+      return studentReservations.some(r => {
+        const lessonStartFromInStudentReservations = dayjs(lesson.startFrom).isBetween(dayjs(r.startFrom), dayjs(r.endAt), null, '[)')
+        const lessonEndAtInStudentReservations = dayjs(lesson.endAt).isBetween(dayjs(r.startFrom), dayjs(r.endAt), null, '(]')
+        const lessonEnvolopesStudentReservations = dayjs(lesson.startFrom).isSameOrBefore(dayjs(r.startFrom)) && dayjs(lesson.endAt).isSameOrAfter(dayjs(r.endAt))
+
+        return lessonStartFromInStudentReservations || lessonEndAtInStudentReservations || lessonEnvolopesStudentReservations
+      })
+    })
   }
 }
 

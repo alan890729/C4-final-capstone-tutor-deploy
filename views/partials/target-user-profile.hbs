@@ -64,7 +64,7 @@
   <div>
     <h4>預約上課</h4>
     <div class="overflow-auto" style="max-height: 100vh;">
-      <form action="" method="post">
+      <form action="/student/reservation/{{targetUser.Teacher.id}}" method="post">
         {{#each targetUser.teacherAvailableDaysInTwoWeeks as |day|}}
         <div class="mb-3">
           <h5>{{formatDateTimeCustom day.day 'YYYY-MM-DD (dddd)'}}</h5>

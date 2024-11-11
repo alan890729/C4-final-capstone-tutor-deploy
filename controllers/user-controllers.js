@@ -165,20 +165,29 @@ const userControllers = {
           where: { teacherId: targetUser.Teacher.id },
           order: [['createdAt', 'DESC']]
         })
-        let reservedLessons = await Reservation.findAll({
-          where: {
-            teacherId: targetUser.Teacher.id,
-            isExpired: false
-          }
-        })
-
         targetUser = targetUser.toJSON()
-        const teacherAvailableDays = targetUser.Teacher.AvailableDays.map(day => day.day)
-        const perLessonDuration = targetUser.Teacher.LessonDurationMinute.durationMinute
-        reservedLessons = reservedLessons.map(r => r.toJSON())
-        targetUser.teacherAvailableDaysInTwoWeeks = reservationTimeHelpers.teacherAvailableDaysInTwoWeeks(teacherAvailableDays, perLessonDuration, reservedLessons)
         targetUser.rating = rating.toJSON().avgRating ? preciseRound(rating.toJSON().avgRating, 1) : undefined
         targetUser.comments = comments.map(c => c.toJSON())
+
+        if (req.user.Student) {
+          let teacherReservedLessons = await Reservation.findAll({
+            where: {
+              teacherId: targetUser.Teacher.id,
+              isExpired: false
+            }
+          })
+          let studentReservedLessons = await Reservation.findAll({
+            where: {
+              studentId: req.user.Student.id,
+              isExpired: false
+            }
+          })
+          teacherReservedLessons = teacherReservedLessons.map(r => r.toJSON())
+          studentReservedLessons = studentReservedLessons.map(r => r.toJSON())
+          const teacherAvailableDays = targetUser.Teacher.AvailableDays.map(day => day.day)
+          const perLessonDuration = targetUser.Teacher.LessonDurationMinute.durationMinute
+          targetUser.teacherAvailableDaysInTwoWeeks = reservationTimeHelpers.teacherAvailableDaysInTwoWeeks(teacherAvailableDays, perLessonDuration, teacherReservedLessons, studentReservedLessons)
+        }
 
         return res.render('user/profile', { targetUser })
       }

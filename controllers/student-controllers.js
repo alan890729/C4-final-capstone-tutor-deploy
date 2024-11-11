@@ -1,5 +1,5 @@
 const dayjs = require('dayjs')
-const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, Reservation, sequelize } = require('../models')
+const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, Reservation, Comment, sequelize } = require('../models')
 const { teacherHasReservedLesson, studentHasReservedLesson } = require('../helpers/reservation-time-helpers')
 const { preciseDividedBy } = require('../helpers/math-helpers')
 
@@ -135,6 +135,73 @@ const studentControllers = {
       }
 
       req.flash('success_messages', '預約成功!')
+      return res.redirect(`/user/profile/${req.user.id}`)
+    } catch (err) {
+      return next(err)
+    }
+  },
+
+  async getCommentPage (req, res, next) {
+    try {
+      const reservationId = Number(req.params.reservationId)
+      const [reservation, hasCommented] = await Promise.all([
+        Reservation.findByPk(reservationId, {
+          attributes: ['studentId', 'teacherId', 'startFrom', 'endAt'],
+          include: [
+            { model: Teacher, include: [{ model: User, attributes: ['name'] }] }
+          ]
+        }),
+        Comment.findOne({
+          where: { reservationId }
+        })
+      ])
+      if (!reservation) throw new Error('Reservation not found!')
+      const studentId = req.user.Student?.id
+      if (!studentId) throw new Error('Only student can comment on reservations!') // 理論上這個可以不用，會被isStudent middleware擋下來
+      if (studentId !== reservation.studentId) throw new Error('access denied!')
+      if (hasCommented) throw new Error('You\'ve already commented this reservation before!')
+
+      return res.render('student/comment', {
+        reservationId,
+        teacherName: reservation.Teacher.User.name,
+        startFrom: reservation.startFrom,
+        endAt: reservation.endAt
+      })
+    } catch (err) {
+      return next(err)
+    }
+  },
+
+  async postComment (req, res, next) {
+    try {
+      const reservationId = Number(req.params.reservationId)
+      const studentId = req.user.Student?.id
+      const reservation = await Reservation.findByPk(reservationId, {
+        attributes: ['studentId', 'teacherId']
+      })
+      if (!reservation) throw new Error('Reservation not found!')
+      if (studentId !== reservation.studentId) throw new Error('access denied!')
+      const teacherId = reservation.teacherId
+      const rate = Number(req.body.rate)
+      const text = req.body.text?.trim()
+      if (!rate || rate < 1 || rate > 5 || !Number.isInteger(rate)) throw new Error('invalid input on rate, rate should be a positive integer between (and include) 1 and 5!')
+      if (!text) throw new Error('Comment is required!')
+
+      const transaction = await sequelize.transaction()
+      try {
+        await Comment.create({
+          text,
+          rate,
+          studentId,
+          teacherId,
+          reservationId
+        })
+        await transaction.commit()
+      } catch (err) {
+        await transaction.rollback()
+        throw err
+      }
+      req.flash('success_messages', '評論成功!')
       return res.redirect(`/user/profile/${req.user.id}`)
     } catch (err) {
       return next(err)

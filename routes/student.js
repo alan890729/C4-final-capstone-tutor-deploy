@@ -8,4 +8,7 @@ router.get('/become-teacher', studentControllers.getBecomeTeacherPage)
 
 router.post('/reservation/:teacherId', studentControllers.postReservation)
 
+router.get('/comment/:reservationId', studentControllers.getCommentPage)
+router.post('/comment/:reservationId', studentControllers.postComment)
+
 module.exports = router

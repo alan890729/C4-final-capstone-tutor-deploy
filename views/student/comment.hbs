@@ -1,0 +1,19 @@
+<section class="mt-5">
+  <h1>分享本次的課程體驗</h1>
+  <h5>老師: {{teacherName}}</h5>
+  <h5>日期(星期): {{formatDateTimeCustom startFrom 'YYYY-MM-DD (dddd)'}}</h5>
+  <h5>時段: {{formatDateTimeCustom startFrom 'HH:mm:ss'}} - {{formatDateTimeCustom endAt 'HH:mm:ss'}}</h5>
+  <form action="/student/comment/{{reservationId}}" method="post">
+    <div class="mb-3">
+      <label for="rate" class="form-label">Rate</label>
+      <input type="number" class="form-control" id="rate" name="rate" min="1", max="5" step="1" required>
+    </div>
+    <div class="mb-3">
+      <label for="text" class="form-label">Comment</label>
+      <textarea name="text" id="text" class="form-control" rows="3" required></textarea>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</section>

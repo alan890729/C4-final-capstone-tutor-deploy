@@ -1,4 +1,5 @@
 const { User, Student, Reservation, Sequelize } = require('../models')
+const { Op } = Sequelize
 const pagination = require('../helpers/pagination-helpers')
 
 const pageControllers = {
@@ -8,13 +9,19 @@ const pageControllers = {
       const currentPage = Number(req.query.page) || 1
       const limit = Number(req.query.limit) || RECORDS_PER_PAGE
       const offset = (currentPage - 1) * limit
+      const keyword = req.query.keyword?.trim() || ''
       let [
         { count: amountOfTeachers, rows: usersWithTeacherStatus },
         studentRankings
       ] = await Promise.all([
         User.findAndCountAll({
           attributes: { exclude: ['password'] },
-          where: { status: 'teacher' },
+          where: {
+            status: 'teacher',
+            name: {
+              [Op.like]: `%${keyword}%`
+            }
+          },
           limit,
           offset
         }),
@@ -57,7 +64,8 @@ const pageControllers = {
       return res.render('tutor/tutors-and-rankings', {
         usersWithTeacherStatus,
         studentRankings,
-        paginators
+        paginators,
+        keyword
       })
     } catch (err) {
       return next(err)

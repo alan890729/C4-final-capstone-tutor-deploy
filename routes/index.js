@@ -22,7 +22,7 @@ router.get('/signin', userControllers.getSignin)
 router.post('/signin', passport.authenticate('local', { failureFlash: true, failureRedirect: '/signin' }), userControllers.postSignin)
 router.post('/logout', userControllers.postLogout)
 
-router.use('/', authenticate, isGeneralUser, (req, res, next) => {
+router.use('/', (req, res, next) => {
   return res.redirect('/tutor')
 })
 

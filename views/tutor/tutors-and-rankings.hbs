@@ -3,7 +3,7 @@
     <div class="col-12 col-lg-9">
       <div class="mb-5">
         <form action="/tutor" method="get" class="d-flex" role="search">
-          <input class="form-control form-control-lg me-2" type="search" placeholder="Search" aria-label="Search">
+          <input class="form-control form-control-lg me-2" type="search" placeholder="Search" name="keyword" value="{{keyword}}">
           <button class="btn btn-lg btn-outline-primary" type="submit">Search</button>
         </form>
       </div>
@@ -33,13 +33,13 @@
       </div>
       <nav>
         <ul class="pagination justify-content-center">
-          <li class="page-item"><a class="page-link" href="?page={{paginators.prevPage}}">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{paginators.prevPage}}&keyword={{keyword}}">Previous</a></li>
           {{#each paginators.pageBtnArr}}
           <li class="page-item {{#if this.isDisabled}} disabled {{/if}} {{#if this.isActive}} active {{/if}}">
-            <a class="page-link" href="?page={{this.pageNum}}">{{this.pageNum}}</a>
+            <a class="page-link" href="?page={{this.pageNum}}&keyword={{../keyword}}">{{this.pageNum}}</a>
           </li>
           {{/each}}
-          <li class="page-item"><a class="page-link" href="?page={{paginators.nextPage}}">Next</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{paginators.nextPage}}&keyword={{keyword}}">Next</a></li>
         </ul>
       </nav>
     </div>

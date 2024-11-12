@@ -11,7 +11,7 @@
         {{#each usersWithTeacherStatus}}
         <div class="col-12 col-sm-6 col-lg-4 mb-3">
           <a href="/user/profile/{{this.id}}" class="text-decoration-none">
-            <div class="card">
+            <div class="card h-100">
               <div class="card-body">
                 <div class="row mb-3">
                   <div class="col-6">
@@ -21,10 +21,10 @@
                   </div>
                   <div class="col-6">
                     <h5 class="card-title">{{this.name}}</h5>
-                    <p><i class="fa-solid fa-globe"></i> {{countryCodeToName this.countryCode}}</p>
+                    <p><i class="fa-solid fa-globe"></i> {{countryCodeToName this.country_code}}</p>
                   </div>
                 </div>
-                <p class="card-text">{{this.selfIntro}}</p>
+                <p class="card-text">{{this.class_intro}}</p>
               </div>
             </div>
           </a>

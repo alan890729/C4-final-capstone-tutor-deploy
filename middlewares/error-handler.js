@@ -12,7 +12,7 @@ function generalErrorHandler (err, req, res, next) {
     // Since manually enter url won't have Referer, i have to check if Referer exist or not.
 
     if (userStatus === 'admin') {
-      res.redirect('/admin') // 之後改後台主頁
+      res.redirect('/admin/users')
       return next(err)
     } else if (userStatus === 'student' || userStatus === 'teacher') {
       res.redirect('/tutor')

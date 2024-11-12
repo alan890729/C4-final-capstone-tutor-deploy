@@ -15,6 +15,9 @@
           <ul class="navbar-nav me-auto">
           {{#if user}}
             {{#ifCondStrictEqual user.status 'admin'}}
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/users">使用者清單</a>
+            </li>
             {{else}}
             <li class="nav-item">
               <a class="nav-link" href="/user/profile/{{user.id}}">我的主頁</a>

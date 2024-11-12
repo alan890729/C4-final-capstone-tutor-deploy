@@ -57,7 +57,7 @@ const userControllers = {
   postSignin (req, res, next) {
     req.flash('success_messages', '登入成功!')
 
-    if (req.user.status === 'admin') return res.redirect('/admin') // 之後改成導到後臺主頁
+    if (req.user.status === 'admin') return res.redirect('/admin/users')
     return res.redirect('/tutor')
   },
 

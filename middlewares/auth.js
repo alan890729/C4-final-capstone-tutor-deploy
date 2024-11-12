@@ -14,7 +14,7 @@ function isStudent (req, res, next) {
 
   if (req.user.status === 'admin') {
     req.flash('error_messages', '管理者只能查看後台，已將您導向到後台頁面!')
-    return res.redirect('/admin') // 後臺頁面出來後改成直接導向後台主頁
+    return res.redirect('/admin/users')
   }
 
   req.flash('error_messages', '您不是學生身分，無法執行該操作!')
@@ -26,7 +26,7 @@ function isTeacher (req, res, next) {
 
   if (req.user.status === 'admin') {
     req.flash('error_messages', '管理者只能查看後台，已將您導向到後台頁面!')
-    return res.redirect('/admin') // 後臺頁面出來後改成直接導向後台主頁
+    return res.redirect('/admin/users')
   }
 
   req.flash('error_messages', '您不是老師身分，無法執行該操作!')
@@ -36,7 +36,7 @@ function isTeacher (req, res, next) {
 function isGeneralUser (req, res, next) {
   if (req.user.status === 'admin') {
     req.flash('error_messages', '管理者只能查看後台，已將您導向到後台頁面!')
-    return res.redirect('/admin') // 之後改，後臺頁面出來直接導到那個路由而不是/admin
+    return res.redirect('/admin/users')
   }
 
   return next()

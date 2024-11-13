@@ -178,10 +178,17 @@ const studentControllers = {
     try {
       const reservationId = Number(req.params.reservationId)
       const studentId = req.user.Student?.id
-      const reservation = await Reservation.findByPk(reservationId, {
-        attributes: ['studentId', 'teacherId']
-      })
+      const [reservation, hasCommented] = await Promise.all([
+        Reservation.findByPk(reservationId, {
+          attributes: ['studentId', 'teacherId', 'isExpired']
+        }),
+        Comment.findOne({
+          where: { reservationId }
+        })
+      ])
       if (!reservation) throw new Error('Reservation not found!')
+      if (!reservation.isExpired) throw new Error('You can comment the reservation after it expired!')
+      if (hasCommented) throw new Error('You\'ve already commented this reservation before!')
       if (studentId !== reservation.studentId) throw new Error('access denied!')
       const teacherId = reservation.teacherId
       const rate = Number(req.body.rate)

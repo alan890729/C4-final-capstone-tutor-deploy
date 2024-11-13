@@ -1,6 +1,6 @@
 const dayjs = require('dayjs')
 const { LessonDurationMinute, User, Student, Teacher, AvailableDay, DaysPerWeek, Reservation, Comment, sequelize } = require('../models')
-const { teacherHasReservedLesson, studentHasReservedLesson } = require('../helpers/reservation-time-helpers')
+const { teacherHasReservedLesson, studentHasReservedLesson, lessonCheck } = require('../helpers/reservation-time-helpers')
 const { preciseDividedBy } = require('../helpers/math-helpers')
 
 const studentControllers = {
@@ -113,6 +113,8 @@ const studentControllers = {
           endAt
         }
       })
+
+      if (!await lessonCheck(selectedLessons, teacherId)) throw new Error('invalid class!')
 
       if (teacherHasReservedLesson(selectedLessons, teacherReservations) || studentHasReservedLesson(selectedLessons, studentReservations)) throw new Error('Some of the selected lessons have already been reserved, please select the lessons we provide, those are the lessons haven\'t reserved!!!!')
 

@@ -6,6 +6,8 @@ dayjs.extend(isBetween)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
+const { AvailableDay, Teacher, LessonDurationMinute } = require('../models')
+
 const reservationTimeHelpers = {
   teacherAvailableDaysInTwoWeeks (teacherAvailableDays, perLessonDuration, teacherReservedLessons, studentReservedLessons) {
     const theFarestDayInTheFuture = 14
@@ -83,6 +85,42 @@ const reservationTimeHelpers = {
         const lessonEnvolopesStudentReservations = dayjs(lesson.startFrom).isSameOrBefore(dayjs(r.startFrom)) && dayjs(lesson.endAt).isSameOrAfter(dayjs(r.endAt))
 
         return lessonStartFromInStudentReservations || lessonEndAtInStudentReservations || lessonEnvolopesStudentReservations
+      })
+    })
+  },
+
+  async lessonCheck (selectedLessons, teacherId) {
+    let teacherAvailableDays = await AvailableDay.findAll({
+      attributes: ['day'],
+      where: { teacherId }
+    })
+    let perLessonDuration = await Teacher.findByPk(teacherId, {
+      attributes: ['lessonDurationMinuteId'],
+      include: [
+        { model: LessonDurationMinute, attributes: ['durationMinute'] }
+      ]
+    })
+    teacherAvailableDays = teacherAvailableDays.map(d => d.day)
+    perLessonDuration = perLessonDuration.LessonDurationMinute.durationMinute
+    return selectedLessons.every(l => {
+      const currentDate = dayjs().hour(0).minute(0).second(0).millisecond(0)
+      const farestDate = currentDate.add(13, 'day').hour(0).minute(0).second(0).millisecond(0)
+      const lStartFromDate = dayjs(l.startFrom).hour(0).minute(0).second(0).millisecond(0)
+      const lEndAtDate = dayjs(l.endAt).hour(0).minute(0).second(0).millisecond(0)
+      const selectLessonBeforeCurrentDate = lStartFromDate.diff(currentDate, 'day') < 0 || lEndAtDate.diff(currentDate, 'day') < 0
+      const selectLessonAfterFarestDate = lStartFromDate.diff(farestDate, 'day') > 0 || lEndAtDate.diff(farestDate, 'day') > 0
+      if (selectLessonBeforeCurrentDate || selectLessonAfterFarestDate) return false
+
+      const day = dayjs(l.startFrom).day()
+      if (!teacherAvailableDays.includes(day)) return false
+
+      const totalMinutes = 180
+      const amountOfLessons = Math.floor(totalMinutes / perLessonDuration)
+      return Array.from({ length: amountOfLessons }).some((lesson, i) => {
+        const startPoint = dayjs().hour(18).minute(0).second(0).millisecond(0)
+        const startTime = startPoint.add(i * perLessonDuration, 'minute').format('HH:mm:ss')
+        const endTime = startPoint.add((i + 1) * perLessonDuration, 'minute').format('HH:mm:ss')
+        return dayjs(l.startFrom).format('HH:mm:ss') === startTime && dayjs(l.endAt).format('HH:mm:ss') === endTime
       })
     })
   }

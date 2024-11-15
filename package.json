@@ -7,7 +7,7 @@
     "dev:unix": "export NODE_ENV=development && nodemon app.js",
     "migrate": "npx sequelize db:migrate",
     "seed": "npx sequelize db:seed:all",
-    "start": "NODE_ENV=development && node app.js",
+    "start": "export NODE_ENV=development && node app.js",
     "lint": "eslint \"**/*.js\" --fix"
   },
   "author": "Alan Huang",

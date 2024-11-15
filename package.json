@@ -5,6 +5,8 @@
   "scripts": {
     "dev:windows": "set NODE_ENV=development&& nodemon app.js",
     "dev:unix": "export NODE_ENV=development && nodemon app.js",
+    "migrate": "npx sequelize db:migrate",
+    "seed": "npx sequelize db:seed:all",
     "lint": "eslint \"**/*.js\" --fix"
   },
   "author": "Alan Huang",
